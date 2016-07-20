@@ -1,0 +1,1 @@
+{% load i18n %}{% blocktrans with title=session.course.title %}Вопрос по Вашему отзыву на курс "{{ title }}"{% endblocktrans %}

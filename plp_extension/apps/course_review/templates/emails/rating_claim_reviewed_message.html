@@ -1,0 +1,23 @@
+{% load i18n %}
+<p>
+    {% blocktrans %}Вы оставляли заявку на удаление отзыва:{% endblocktrans %}
+</p>
+<p>
+    {% if rating.comment %}
+    {{ rating.comment|linebreaks }}
+    {% endif %}
+    {% blocktrans with rating=rating.rating %}Оценка: {{ rating }}{% endblocktrans %}
+</p>
+<p>
+    {% blocktrans with title=rating.session.course.title %}по курсу &laquo;{{ title }}&raquo;.{% endblocktrans %}
+</p>
+<p>
+    {% if status == 'accepted' %}
+        {% blocktrans %}Ваша заявка одобрена.{% endblocktrans %}
+    {% else %}
+        {% blocktrans %}Ваша заявка отклонена.{% endblocktrans %}
+    {% endif %}
+</p>
+<p>
+    {% blocktrans %}Если у вас есть вопросы, просто ответьте на это письмо.{% endblocktrans %}
+</p>

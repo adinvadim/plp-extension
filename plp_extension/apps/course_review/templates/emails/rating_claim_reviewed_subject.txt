@@ -1,0 +1,1 @@
+{% load i18n %}{% blocktrans with title=rating.session.course.title %}Обновлен статус по запросу на удаление отзыва по курсу "{{ title }}"{% endblocktrans %}

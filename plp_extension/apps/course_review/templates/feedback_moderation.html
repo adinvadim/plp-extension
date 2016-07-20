@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static from staticfiles %}
+
+{% block title %}{% blocktrans %}Модерация отзывов{% endblocktrans %}{% endblock %}
+
+{% block section_id %}feedback-moderation{% endblock %}
+
+{% block content %}
+    <h1>{% block content_header %}{% blocktrans %}Модерация отзывов{% endblocktrans %}{% endblock %}</h1>
+    <div style="display: none">{{ filter_form.as_p }}</div>
+    <div>
+        <table>
+            <tr class="filter-row">
+                <td>{% blocktrans %}Фильтрация по вузу{% endblocktrans %}</td>
+                <td class="dropdown-filter">
+                    <div class="dropdown btn-group" id="university-filter">
+                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                      <span class="text"></span><span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        {% for val, text in UNIV_CHOICES %}
+                            <li class="university-filter" data-univ="{{ val }}">
+                                <a href="?{% if val %}university={{ val }}{% endif %}">{{ text }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                </td>
+            </tr>
+            <tr class="filter-row">
+                <td>{% blocktrans %}Фильтрация по курсу{% endblocktrans %}</td>
+                <td class="dropdown-filter">
+                    <div class="dropdown btn-group" id="session-filter">
+                      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                      <span class="text"></span><span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        {% for val, text in SESSION_CHOICES %}
+                            <li class="university-filter" data-univ="{{ val }}">
+                                <a href="?{% if val %}session={{ val }}{% endif %}">{{ text }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        {% if object_list %}
+        {% block content_table %}
+        <table class="table">
+            <tr>
+                <th>{% blocktrans %}Сессия курса{% endblocktrans %}</th>
+                <th>{% blocktrans %}Отзыв{% endblocktrans %}</th>
+                <th></th>
+                <th></th>
+            </tr>
+            {% for item in object_list %}
+                <tr>
+                    <td>
+                        {{ item.session.course.university.title }}<br>
+                        {{ item.session.course.title }}<br>
+                        {{ item.session.slug }}
+                    </td>
+                    <td>
+{#                        {{ item.feedback|linebreaks }}#}
+                        {# TODO: отображение feedback #}
+                    </td>
+                    <td>
+                        <input type="button" data-feedback="{{ item.id }}" class="btn btn-success f-publish-btn" autocomplete="off" value="{% blocktrans %}Опубликовать{% endblocktrans %}" />
+                    </td>
+                    <td>
+                        <input type="button" data-feedback="{{ item.id }}" class="btn btn-danger f-reject-btn" autocomplete="off" value="{% blocktrans %}Отклонить{% endblocktrans %}" />
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% endblock %}
+        <div>
+            {% if paginator.num_pages > 1 %}
+                {% if page_obj.has_previous %}
+                    <a class="paginator-link" href="?page={{ page_obj.previous_page_number }}">&larr;</a>
+                {% endif %}
+                <span class="current_page">
+                    {% blocktrans trimmed with current_page=page_obj.number all_pages=paginator.num_pages %}
+                    {{ current_page }} из {{ all_pages }} стр.
+                    {% endblocktrans %}
+                </span>
+                {% if page_obj.has_next %}
+                    <a class="paginator-link" href="?page={{ page_obj.next_page_number }}">&rarr;</a>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% else %}
+            <p>{% blocktrans %}Непромодерированных отзывов по заданным параметрам не найдено{% endblocktrans %}</p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        var REQUEST_URL = "{% url 'feedback-moderation' %}";
+    </script>
+    <script src="{% static 'js/moderation.js' %}"></script>
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link href="{% static 'css/ratings.css' %}" rel="stylesheet">
+{% endblock %}

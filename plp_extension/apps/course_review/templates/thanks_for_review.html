@@ -1,0 +1,24 @@
+{% extends 'course/course-base.html' %}
+
+{% load i18n%}
+
+{% block course_content %}
+{% if finished %}
+<h3>{% blocktrans %}Оставить историю обучения{% endblocktrans %}</h3>
+{% else %}
+<h3>{% blocktrans %}Оставить отзыв{% endblocktrans %}</h3>
+{% endif %}
+
+<div class="thank-for-review bg-info text-center" data-delay="10">
+  {% if finished %}
+    <h4>{% blocktrans %}Спасибо за вашу историю! Она будет опубликована после проверки модератором.{% endblocktrans%}</h4>
+  {% else %}
+    <h4>{% blocktrans %}Спасибо за ваш отзыв!{% endblocktrans%}</h4>
+  {% endif %}
+  <p>
+      {% blocktrans trimmed with tag_start='<span class="thank-for-review__counter">' tag_end='</span>' %}
+      Вы будете автоматически перенаправлены в Личный Кабинет через {{ tag_start }}10{{ tag_end }} секунд.
+      {% endblocktrans %}
+  </p>
+</div>
+{% endblock %}

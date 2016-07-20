@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static from staticfiles %}
+
+{% block title %}{% blocktrans %}Оценки курса{% endblocktrans %}{% endblock %}
+
+{% block section_id %}course-rating{% endblock %}
+
+{% block content %}
+    {% block popup %}
+    <div class="modal fade text-left" tabindex="-1" role="dialog" id="deletionClaimPopup">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+                <div id="leaveClaim">
+                    <p>
+                        {% blocktrans trimmed with tag_start='<span id="chosenRating">' tag_end='</span>' %}
+                        Оценка: {{ tag_start }}{{ tag_end }}
+                        {% endblocktrans %}
+                    </p>
+                    <p id="chosenComment"></p>
+                    <p>
+                        {% blocktrans trimmed with tag_start='<span id="chosenDate">' tag_end='</span>' %}
+                        Дата: {{ tag_start }}{{ tag_end }}
+                        {% endblocktrans %}
+                    </p>
+                    <form>
+                      <div class="form-group">
+                      <textarea name="reason" class="form-control" placeholder="{% blocktrans %}Обоснуйте запрос на удаление отзыва{% endblocktrans %}"></textarea>
+                      </div>
+                    </form>
+                </div>
+                <div id="claimLeft"></div>
+          </div>
+          <div class="modal-footer">
+            <div class="clearfix">
+              <button id="btnOK" class="btn btn-default pull-left" data-dismiss="modal">{% blocktrans %}ОК{% endblocktrans %}</button>
+              <button id="btnCancel" class="btn btn-default pull-left" data-dismiss="modal">{% blocktrans %}Отмена{% endblocktrans %}</button>
+              <button id="requestDeletion" class="btn btn-success pull-left" data-rating-id="">{% blocktrans %}Запросить удаление{% endblocktrans %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade text-left" tabindex="-1" role="dialog" id="sendQuestionPopup">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+                <div id="leaveQuestion">
+                    <h3>{% blocktrans %}Отправить вопрос автору отзыва{% endblocktrans %}</h3>
+                    <p>
+                        {% blocktrans trimmed with tag_start='<span id="chosenRatingQ">' tag_end='</span>' %}
+                        Оценка: {{ tag_start }}{{ tag_end }}
+                        {% endblocktrans %}
+                    </p>
+                    <p id="chosenCommentQ"></p>
+                    <p>
+                        {% blocktrans trimmed with tag_start='<span id="chosenDateQ">' tag_end='</span>' %}
+                        Дата: {{ tag_start }}{{ tag_end }}
+                        {% endblocktrans %}
+                    </p>
+                    <form>
+                      <div class="form-group">
+                      <textarea name="text-question" class="form-control" placeholder="{% blocktrans %}Текст вопроса{% endblocktrans %}"></textarea>
+                      </div>
+                    </form>
+                </div>
+                <div id="questionLeft"></div>
+          </div>
+          <div class="modal-footer">
+            <div class="clearfix">
+              <button id="btnOKQ" class="btn btn-default pull-left" data-dismiss="modal">{% blocktrans %}ОК{% endblocktrans %}</button>
+              <button id="btnCancelQ" class="btn btn-default pull-left" data-dismiss="modal">{% blocktrans %}Отмена{% endblocktrans %}</button>
+              <button id="requestQuestion" class="btn btn-success pull-left" data-rating-id="">{% blocktrans %}Отправить вопрос{% endblocktrans %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+
+    {% block ratings_list %}
+    <h1>
+        {% blocktrans trimmed with title=session.course.title slug=session.slug %}
+        Оценки курса &laquo;{{ title }} - {{ slug }}&raquo;
+        {% endblocktrans %}
+    </h1>
+    <h3>{{ session.course.university.title }}</h3>
+    {% if is_author and not rating_enabled %}
+        <div>
+            <p>
+                {% blocktrans %}Для данной сессии курса отображение отзывов скрыто.{% endblocktrans %}
+            </p>
+        </div>
+    {% endif %}
+    <div>
+        {% for item in object_list %}
+        {% include '_course_rating.html' %}
+        <hr>
+        {% endfor %}
+    </div>
+    {% endblock %}
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        var CHECK_QUESTION_URL = "{% url 'course-rating-question' %}";
+        var CLAIM_URL = "{% url 'handle-rating-claim' %}";
+    </script>
+    <script src="{% static 'js/rating_teacher_buttons.js' %}"></script>
+{% endblock %}

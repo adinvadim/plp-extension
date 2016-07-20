@@ -1,0 +1,19 @@
+{% extends 'admin/change_list.html' %}
+{% load i18n %}
+
+{% block content_title %}
+    {% if 'course/statistics' in request.path %}
+        <h1>{% blocktrans %}Статистика записей на курсы{% endblocktrans %}</h1>
+    {% else %}
+        {{ block.super }}
+    {% endif %}
+{% endblock %}
+
+{% block filters %}
+    {% if 'statistics' in request.path %}
+        <a class="button" style="" href="{% url 'admin:plp_course_changelist' %}">{% blocktrans %}Курсы{% endblocktrans %}</a>
+    {% else %}
+        <a class="button" style="" href="{{ request.path }}statistics">{% blocktrans %}Статистика{% endblocktrans %}</a>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'admin/base_site.html' %}
+{% load static i18n %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% static 'js/highcharts.js' %}" type="text/javascript"></script>
+{% endblock %}
+
+{% block content_title %}
+    <h1>
+        {% blocktrans trimmed with title=course.title %}
+        Статистика записей на курс {{ title }}
+        {% endblocktrans %}
+    </h1>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        <p>
+            {% blocktrans %}Количество зарегистрированных на последнюю сессию пользователей: {{ participants_count }}{% endblocktrans %}
+        </p>
+        <p>
+            {% blocktrans %}Количество пользователей, для которых предполагается прохождение в режиме подтверждения личности: {{ payments_count }}{% endblocktrans %}
+        </p>
+        <table id="charts">
+            <tr>
+                <td><div id="enrollments"></div></td>
+            </tr>
+            <tr>
+                <td><div id="payments"></div></td>
+            </tr>
+        </table>
+    </div>
+
+    <script type="text/javascript">
+        var enrollment_data = {{ enrollment_data|safe }};
+        var payment_data = {{ payment_data|safe }};
+        var i, date, js_date;
+        for (i = 0; i < enrollment_data.length; i++) {
+            date = enrollment_data[i][0].split('-');
+            js_date = Date.UTC(parseInt(date[0]), parseInt(date[1]) - 1, parseInt(date[2]));
+            enrollment_data[i][0] = js_date;
+        }
+        for (i = 0; i < payment_data.length; i++) {
+            date = payment_data[i][0].split('-');
+            js_date = Date.UTC(parseInt(date[0]), parseInt(date[1]) - 1, parseInt(date[2]));
+            payment_data[i][0] = js_date;
+        }
+
+        var width = $('#content-main').width();
+        $('#charts td').width(width - 20);
+        $('#enrollments').highcharts({
+            title: '{% blocktrans %}Записи и платежи за сессию курса{% endblocktrans %}',
+            plotOptions: {
+                line: {marker: {enabled: false}}
+            },
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    day: '%e.%m.%Y',
+                    month: '%e.%m.%Y',
+                    week: '%e.%m.%Y',
+                    year: '%e.%m.%Y'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: '{% blocktrans %}Записи на курс{% endblocktrans %}'
+                }
+            },
+            series: [
+                {
+                    data: enrollment_data,
+                    animation: false,
+                    name: '{% blocktrans %}Записи на курс{% endblocktrans %}'
+                }
+            ]
+        });
+        $('#payments').highcharts({
+            title: '{% blocktrans %}Платежи{% endblocktrans %}',
+            plotOptions: {
+                line: {marker: {enabled: false}}
+            },
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    day: '%e.%m.%Y',
+                    month: '%e.%m.%Y',
+                    week: '%e.%m.%Y',
+                    year: '%e.%m.%Y'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: '{% blocktrans %}Платежи{% endblocktrans %}'
+                }
+            },
+            series: [
+                {
+                    data: payment_data,
+                    animation: false,
+                    name: '{% blocktrans %}Платежи{% endblocktrans %}'
+                }
+            ]
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'course_rating.html' %}
+{% load i18n %}
+
+{% block ratings_list %}
+    <h1>
+        {% blocktrans trimmed with user=user.get_full_name date_val=date|date:'SHORT_DATE_FORMAT' %}
+        Оценки курсов преподавателя {{ user }} за {{ date_val }}
+        {% endblocktrans %}
+    </h1>
+    {% for session, items in by_sessions.iteritems %}
+        <div>
+            <h4>{{ session.course.title }} - {{ session.slug }}</h4>
+            {% for item in items %}
+                {% include '_course_rating.html' with is_author=item.is_author %}
+                <hr>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}

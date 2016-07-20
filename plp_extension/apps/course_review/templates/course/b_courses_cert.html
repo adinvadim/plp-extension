@@ -1,0 +1,247 @@
+{% load imagekit %}
+{% load pytils_numeral %}
+{% load pytils_dt %}
+{% load staticfiles %}
+{% load html_helpers %}
+{% load course_review_tags %}
+{% load i18n %}
+
+  {% for s in sessions %}
+    <div class="col-md-12 my-cources-list">
+      <div class="course course--horizontal{% if s.enlist_deadline and s.enlist_deadline <= 7 %} hot{% endif %}"
+        data-deadline="{{ s.enlist_deadline }}">
+      <div class="row">
+        <div class="col-md-4 col-sm-12 col-xs-12">
+          {% if s.enlist_deadline and s.enlist_deadline <= 7 %}<div class="flag">{{ s.enlist_deadline|get_plural:"день,дня,дней" }}</div>{% endif %}
+          {% if not finished %}
+          <a
+              {% if s.access_allowed and allow_edx_url and s.edx_link %}
+                    href="{{ s.edx_link }}"
+              {% else %}
+                    href="{% url 'course_details' uni_slug=s.course.university.slug slug=s.course.slug %}?session={{ s.slug }}"
+              {% endif %}
+
+                  class="uho">
+            {% if s.course.cover and s.course.cover|file_exists %}
+              {% generateimage 'imagekit:thumbnail' source=s.course.cover width=275 height=155 as img %}<img src="{{ img.url }}" class="course-image" />
+            {% else %}
+              <img src="{% static 'img/course-image2.jpg' %}" alt="" class="course-image">
+            {% endif %}
+          </a>
+          {% else %}
+            {% if s.course.cover and s.course.cover|file_exists %}
+              {% generateimage 'imagekit:thumbnail' source=s.course.cover width=275 height=155 as img %}<img src="{{ img.url }}" class="course-image" />
+            {% else %}
+              <img src="{% static 'img/course-image2.jpg' %}" alt="" class="course-image">
+            {% endif %}
+          {% endif %}
+        </div>
+        <div class="col-md-8 col-sm-12 col-xs-12">
+          <div class="course-title">
+            <a
+              {% if s.access_allowed and allow_edx_url and s.edx_link and not s.course.archived %}
+                href="{{ s.edx_link }}"
+              {% else %}
+                href="{% url 'course_details' uni_slug=s.course.university.slug slug=s.course.slug %}?session={{ s.slug }}"
+              {% endif %}
+            >{{ s.course.title }}</a>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="course-content">
+            <div class="course-date"><span class="icon calendar-icon"></span>
+              {% if s.course_period %}
+                {{ s.course_period }}
+              {% else %}
+                {% blocktrans %}Следите за новостями{% endblocktrans %}
+              {% endif %}
+            </div>
+            <div class="course-status {{ s.course_status.code|mapping:'started:course-started, scheduled:course-not-started, ended:course-ended, :course-unknown' }}">
+              {{ s.course_status.title|default:_("Дату старта объявим позже") }}
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: {{ s.get_course_percent }}%;"></div>
+              </div>
+
+                <div class="text-muted small letter-block">
+                  <p><input type="checkbox" data-course-id="{{ s.get_absolute_slug_v1 }}"
+                            data-toggle="modal" data-target="#subscription-box" class="edx-subscribe"
+                            {% if s.subscribed %}checked="checked"{% endif %} autocomplete="off">
+                      {% blocktrans %}Получать рассылку{% endblocktrans %}</p>
+                </div>
+
+              {% if ENABLE_COURSE_RATING and not finished %}
+              {# TODO: url на оставить отзыв #}
+                  <!--{% include "components/course-rating.html" with course=s.course session=s %}-->
+                  <div class="rating-stars course__rating" data-rating="{{ s.course.rating }}" data-url="{% url 'leave-course-response' uni_slug=s.course.university.slug  course_slug=s.course.slug session_slug=s.slug %}"></div>
+                  <a href="{% url 'leave-course-response' uni_slug=s.course.university.slug  course_slug=s.course.slug session_slug=s.slug %}">
+                    {% blocktrans %}Добавить отзыв{% endblocktrans %}
+                  </a>
+
+              {% endif %}
+
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="run-signed text-right">
+            {% user_left_story s as user_story %}
+            {% if finished and not user_story %}
+              <a href="{% url 'leave-course-response' uni_slug=s.course.university.slug  course_slug=s.course.slug session_slug=s.slug %}" class="btn btn-primary">
+                {% blocktrans %}Оставить историю о курсе{% endblocktrans %}
+              </a>
+            {% else %}
+              {# TODO: Вынести такое большое условие в if в отдельный метод у Сессии, потому что сложно понять когда именно срабатывает это условие #}
+              {% if s.access_allowed and s.course_status.code == 'started' and s.edx_link or s.access_allowed and s.course_status.code == 'ended' and not s.course.archived %}
+                <a href="{{ s.edx_link }}" class="btn btn-primary">
+                  <span class="icon edu-icon"></span>{% blocktrans %}Перейти к материалам курса{% endblocktrans %}
+                </a>
+              {% elif s.course_status.code == 'scheduled' %}
+                  <p>{% blocktrans %}Обучение на курсе начнётся{% endblocktrans %} <span class="course-date">{{ s.datetime_starts|date:"SHORT_DATE_FORMAT" }}</span></p>
+              {% endif %}
+            {% endif %}
+          </div>
+          {% if s.can_leave %}
+            <div class="text-muted small  text-right leave-edu">
+              <p><a href="#" class="text-muted do-leave" data-title="{{ s.course.title }}" data-ptcpt-id="{{ s.participant_id }}" data-toggle="modal" data-target="#leave-confirm-box">
+                  {% blocktrans %}Покинуть курс{% endblocktrans %}</a></p>
+{# TODO       <p><a href="#" class="text-muted do-rate" data-url="{% url 'rate-course' course_session_id=s.id %}" data-toggle="modal" data-target="#rate-box">Оценить курс</a></p>#}
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+      {% if s.course_status.code != 'ended' %}
+        {% if s.available_enrollment_types %}
+          {% for et, enrolled, expired in s.available_enrollment_types %}
+            {% if enrolled %}
+              <div class="cert-info-wrap">
+                <div class="cert-info row">
+                  <div class="col-md-8 col-sm-6 col-xs-12">
+                      <h4>{% blocktrans %}Подтвержденный сертификат{% endblocktrans %}</h4>
+                      <p>
+                          {% blocktrans with href="" etid=et.pk %}В случае успешного прохождения курса, вы получите подтвержденный сертификат. <a href="{{ href }}"  data-etid="{{ etid }}">Подробнее о сертификате</a>.{% endblocktrans %}
+                      </p>
+                  </div>
+                </div>
+              </div>
+            {% elif expired == 'good' %}
+              <div class="cert-info-wrap">
+                <div class="cert-info row">
+                  <div class="col-md-8 col-sm-6 col-xs-12">
+                      <h4>{% if et.days_left <= 10 %}
+                          {% blocktrans %}Вы можете получить подтверждённый сертификат{% endblocktrans %}
+                      {% else %}{% blocktrans %}Подтвержденный сертификат{% endblocktrans %}{% endif %}</h4>
+                      {% if et.about %}
+                        {{ et.about|safe }}
+                      {% else %}
+                        <p>{% blocktrans %}Вы можете перезачесть этот курс в любом вузе. Для этого необходимо выполнить контрольные задания курса в режиме идентификации личности, и получить подтвержденный сертификат.{% endblocktrans %}</p>
+                      {% endif %}
+                      {% if et.days_left <= 10 %}<p>
+                          {% blocktrans trimmed count counter=et.days_left %}
+                              Остался всего {{ counter }} день для оплаты сертификата.
+                              {% plural %}
+                              Осталось всего {{ counter }} дней для оплаты сертификата.
+                          {% endblocktrans %}
+                          </p>{% endif %}
+                      {% if et.description %}
+                      <div class="dropbox"><p><a href="#" data-etid="{{ et.pk }}">{% blocktrans %}Подробнее о сертификате{% endblocktrans %}</a></p></div>
+                      {% endif %}
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-xs-12">
+                      <a href="{% url 'student_payment_link' uni_slug=s.course.university.slug slug=s.course.slug session_slug=s.slug new_enrollment_type=et.mode %}" class="btn btn-success">
+                          <span class="icon money-icon"></span>{% blocktrans %}Оплатить сейчас{% endblocktrans %}</a>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% elif s.honor_ended %}
+        <div class="cert-info-wrap">
+          <div class="cert-info row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              {% if s.certificate_data %}
+                <h4>{% blocktrans %}Результаты курса{% endblocktrans %}</h4>
+                <p>
+                  {% if s.honor_certificate %}
+                    {% blocktrans trimmed count counter=s.certificate_data.grade %}
+                        Ваш результат по курсу: {{ counter }} балл.
+                        {% plural %}
+                        Ваш результат по курсу: {{ counter }} баллов.
+                    {% endblocktrans %}
+                    {% if s.certificate_data.passed %}
+                      {% if s.certificate_data.download_url %}
+                        {% blocktrans trimmed with href=s.certificate_data.download_url %}
+                            Вы можете посмотреть и скачать сертификат об успешном окончании курса по ссылке:
+                            <a href="{{ href }}">{{ href }}</a>.
+                          {% endblocktrans %}
+                      {% else %}
+                        {% blocktrans %}Вы набрали достаточно баллов для получения сертификата. Ссылка на сертификат появится здесь в ближайшее время.{% endblocktrans %}
+                      {% endif %}
+                    {% else %}
+                      {% blocktrans %}Вы не набрали достаточно баллов для получения сертификата.{% endblocktrans %}
+                    {% endif %}
+                  {% else %}
+                    {% blocktrans %}Выпуск сертификатов для данного курса не предусмотрен.{% endblocktrans %}
+                    {% blocktrans trimmed count counter=s.certificate_data.grade %}
+                        Ваш результат по курсу: {{ counter }} балл.
+                        {% plural %}
+                        Ваш результат по курсу: {{ counter }} баллов.
+                    {% endblocktrans %}
+                  {% endif %}
+                </p>
+              {% elif not s.honor_certificate %}
+                <p>
+                  {% blocktrans trimmed %}
+                      Выпуск сертификатов для данного курса не предусмотрен.
+                      В ближайшее время здесь будет отображена ваша финальная оценка.
+                  {% endblocktrans %}
+                </p>
+              {% else %}
+                <p>
+                  {% blocktrans %}Выпуск сертификатов начнётся в ближайшее время, команда курса сообщит о старте.{% endblocktrans %}
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="cert-info-wrap">
+          <div class="cert-info row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              {% if s.certificate_data %}
+                <h4>{% blocktrans %}Результаты курса{% endblocktrans %}</h4>
+                <p>
+                  {% blocktrans trimmed count counter=s.certificate_data.grade %}
+                      Ваш результат по курсу: {{ counter }} балл.
+                      {% plural %}
+                      Ваш результат по курсу: {{ counter }} баллов.
+                  {% endblocktrans %}
+                  {% if s.certificate_data.passed %}
+                    {% if s.certificate_data.download_url %}
+                      {% blocktrans trimmed with href=s.certificate_data.download_url %}
+                          Вы можете посмотреть и скачать сертификат об успешном окончании курса по ссылке:
+                          <a href="{{ href }}">{{ href }}</a>.
+                        {% endblocktrans %}
+                    {% else %}
+                      {% blocktrans %}Вы набрали достаточно баллов для получения сертификата. Ссылка на сертификат появится здесь в ближайшее время.{% endblocktrans %}
+                    {% endif %}
+                  {% else %}
+                    {% blocktrans %}Вы не набрали достаточно баллов для получения сертификата.{% endblocktrans %}
+                  {% endif %}
+                </p>
+              {% else %}
+                <p>
+                  {% blocktrans %}Выпуск сертификатов начнётся в ближайшее время, команда курса сообщит о старте.{% endblocktrans %}
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="{% if s.course.university.abbr|length > 18 %}long-{% endif %}university-title"><div class="icon" style="background-image:url('{% if s.course.university.icon %}{{ s.course.university.icon.url }}{% else %}{% static 'img/uni-icon.png' %}{% endif %}');"></div><a href="{% url 'university_details' s.course.university.slug %}">{{ s.course.university.abbr }}</a></div>
+
+      </div>
+    </div>
+  {% endfor %}

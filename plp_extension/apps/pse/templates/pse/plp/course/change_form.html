@@ -1,0 +1,44 @@
+{% extends 'admin/change_form.html' %}
+{% load i18n admin_modify static pse_admin_helpers %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/redactor/redactor/redactor.js' %}"></script>
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "js/redactor/redactor/redactor.css" %}" />
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+    <script src="{% static 'js/jquery.are-you-sure.js'%}"></script>
+    <script>
+    $(document).ready(function() {
+        var course_form = document.getElementById('course_form');
+        $(course_form).areYouSure({'message':'{% blocktrans %}Вы не сохранили изменения{% endblocktrans %}', 'fieldSelector': ":input:not([type=submit]):not(input[type=button])"});
+        $('.vLargeTextField').redactor({
+            changeCallback: function() {
+                $(course_form).trigger('checkform.areYouSure');
+            },
+            buttons: ['bold', 'italic', 'underline', 'unorderedlist', 'orderedlist', 'link']
+        });
+
+        $('form').on('dirty.areYouSure', function() {
+          $(this).find('[type="submit"]').removeAttr('disabled').fadeTo(0, 1);
+        }).on('clean.areYouSure', function() {
+          $(this).find('[type="submit"]').attr('disabled', 'disabled').fadeTo(0, 0.3);
+        }).find('[type="submit"]').attr('disabled', 'disabled').fadeTo(0, 0.3);
+
+       var boxes = $('.redactor-box');
+       for (var i=0; i < boxes.length; ++i){
+           $(boxes[i]).parent()[0].getElementsByTagName('label')[0].style.float = "none";
+           $(boxes[i]).parent()[0].getElementsByTagName('label')[0].style.display = "inline";
+       }
+    })
+    </script>
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+    {% submit_row_non_staff %}
+{% endblock %}

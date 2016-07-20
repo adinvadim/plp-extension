@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load pytils_numeral %}
+{% load course_review_tags %}
+{% load i18n %}
+
+{% block title %}{% blocktrans %}Мои курсы{% endblocktrans %}{% endblock title %}
+
+{% block section_id %}my{% endblock section_id %}
+
+
+
+{% block content %}
+
+<div class="background-poster background-poster--user"></div>
+<div class="row personal-info-box">
+  <div class="col-md-8 col-sm-6">
+    <div class="personal-info">
+      <h1>{{ user.first_name }}<br>{{ user.last_name }}</h1>
+      <ul class="list-inline list-unstyled">
+        <li>
+            {% blocktrans trimmed count counter=courses_finished|length %}
+                {{ counter }} курс <span>вы прошли</span>
+                {% plural %}
+                {{ counter }} курсов <span>вы прошли</span>
+            {% endblocktrans %}
+        </li>
+        <li>
+            {% blocktrans trimmed count counter=total %}
+                на {{ counter }} курс <span>вы записаны</span>
+                {% plural %}
+                на {{ counter }} курсов <span>вы записаны</span>
+            {% endblocktrans %}
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-4  col-sm-6 hidden-xs text-center">
+    <img class="picture img-circle" width="133" height="133" alt="" src="{{ user.icon_profile }}">
+  </div>
+</div>
+{% if total %}
+  <h2>
+      {% blocktrans trimmed count counter=total %}
+          Всего {{ counter }} курс
+          {% plural %}
+          Всего {{ counter }} курсов
+      {% endblocktrans %}
+  </h2>
+{% endif %}
+
+{% if courses_feature or courses_current or courses_finished %}
+
+  <ul class="nav nav-tabs" role="tablist">
+
+    {% if courses_feature %}
+      <li role="presentation"><a href="#featured-cources" aria-controls="featured-cources" role="tab" data-toggle="tab"><span>{% blocktrans %}Будущие{% endblocktrans %}</span> &mdash; {{ courses_feature|length }}</a></li>
+    {% endif %}
+
+    {% if courses_current %}
+      <li role="presentation" class="active"><a href="#current-cources" aria-controls="current-cources" role="tab" data-toggle="tab"><span>{% blocktrans %}Текущие{% endblocktrans %}</span> &mdash; {{ courses_current|length }}</a></li>
+    {% endif %}
+
+    {% if courses_finished %}
+
+    {% count_stories_for_sessions courses_finished left=True as count_stories %}
+    <li role="presentation"><a href="#completed-cources" aria-controls="completed-cources" role="tab" data-toggle="tab">
+      <span>{% blocktrans %}Завершённые{% endblocktrans %}</span> &mdash; {{ courses_finished|length }}</a>
+      <mark>
+        ({% blocktrans trimmed count counter=count_stories %}
+            {{ counter }} история осталась
+            {% plural %}
+            {{ counter }} историй осталось
+        {% endblocktrans %})
+      </mark>
+    </li>
+    {% endif %}
+
+    {% if subscriptions %}
+      <li role="presentation"><a href="#subscriptions" aria-controls="subscriptions" role="tab" data-toggle="tab"><span>{% blocktrans %}Мои подписки{% endblocktrans %}</span> &mdash; {{ subscriptions|length }}</a></li>
+    {% endif %}
+  </ul>
+
+  <div class="tab-content">
+    {% if courses_feature %}
+      <div role="tabpanel" class="tab-pane" id="featured-cources">
+       <div class="row courses-list">{% include "course/b_courses_cert.html" with sessions=courses_feature show_pay=True %}</div>
+      </div>
+    {% endif %}
+
+    {% if courses_current %}
+      <div role="tabpanel" class="tab-pane active" id="current-cources">
+        <div class="row courses-list">{% include "course/b_courses_cert.html" with sessions=courses_current allow_edx_url=True show_pay=True %}</div>
+      </div>
+    {% endif %}
+
+    {% if courses_finished %}
+      <div role="tabpanel" class="tab-pane" id="completed-cources">
+        <div class="row courses-list">{% include "course/b_courses_cert.html" with sessions=courses_finished allow_edx_url=True finished=True %}</div>
+      </div>
+    {% endif %}
+
+    {% if subscriptions %}
+      <div role="tabpanel" class="tab-pane" id="subscriptions">
+        <div class="row courses-list">{% include "course/b_courses_subscribed.html" with subscriptions=subscriptions %}</div>
+      </div>
+    {% endif %}
+  </div>
+
+{% endif %}
+
+<div class="modal fade text-left" tabindex="-1" role="dialog" id="leave-confirm-box">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>{% blocktrans %}Вы собираетесь покинуть курс{% endblocktrans %} <span id="leave-confirm-title" class="medium"></span></p>
+        <p id="course-deadline-info"></p>
+        <p>{% blocktrans %}Вы уверены?{% endblocktrans %}</p>
+      </div>
+      <div class="modal-footer">
+        <div class="clearfix">
+          <span id="leave-confirm-close" class="btn btn-success pull-left">{% blocktrans %}Остаться на курсе{% endblocktrans %}</span>
+          <span id="leave-confirm" class="btn btn-primary pull-right" data-loading-text="{% blocktrans %}отправка данных...{% endblocktrans %}">{% blocktrans %}Покинуть курс{% endblocktrans %}</span>
+        </div>
+        <div id="leave-confirm-status"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" tabindex="-1" role="dialog" id="unsubscribe-confirm-box">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>{% blocktrans %}Вы собираетесь отписаться от новостей по курсу{% endblocktrans %} <span id="unsubscribe-confirm-title" class="medium"></span></p>
+        <p>{% blocktrans %}Вы уверены?{% endblocktrans %}</p>
+      </div>
+      <div class="modal-footer">
+        <div class="clearfix">
+          <span id="unsubscribe-confirm-close" class="btn btn-success pull-left">{% blocktrans %}Продолжить получать новости{% endblocktrans %}</span>
+          <span id="unsubscribe-confirm" class="btn btn-primary pull-right" data-loading-text="{% blocktrans %}отправка данных...{% endblocktrans %}">{% blocktrans %}Отписаться{% endblocktrans %}</span>
+        </div>
+        <div id="unsubscribe-confirm-status"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade text-left" tabindex="-1" role="dialog" id="subscription-box">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p id="subscribe-popup-text"></p>
+      </div>
+      <div class="modal-footer">
+        <div class="clearfix">
+          <span id="do-edx-subscribe" class="btn btn-success pull-left"></span>
+          <span id="subscribe-close" class="btn btn-primary pull-right" data-dismiss="modal">{% blocktrans %}Отмена{% endblocktrans %}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block javascript %}
+  {{ block.super }}
+  <script type="text/javascript" src="{% static 'js/search_parameters.js' %}"></script>
+  <script type="text/javascript">
+    var PARTICIPANT_QUIT_URL = "{% url 'quit_course' %}";
+    var URL_SUBSCRIBE = "{% url 'course_subscribe' %}";
+
+    $('#leave-confirm-box').on('hide.bs.modal', function(e) {
+        $('#leave-confirm-close').html('{% blocktrans %}Остаться на курсе{% endblocktrans %}');
+        $('#leave-confirm').html('{% blocktrans %}Покинуть курс{% endblocktrans %}');
+    });
+
+    $('#unsubscribe-confirm-box').on('hide.bs.modal', function(e) {
+        $('#unsubscribe-confirm').html('{% blocktrans %}Отписаться{% endblocktrans %}');
+    });
+
+    $('#subscription-box').on('hide.bs.modal', function(e) {
+        $('#do-edx-subscribe').attr('disabled', false);
+    });
+
+    $('a[data-etid]').click(function (e) {
+      e.preventDefault();
+      $(this).parent().load('?load=etdescription&id=' + $(this).data('etid'));
+      $(this).parent().parent().addClass('dropup');
+      $(this).parent().after('<p class="toggle-desc as-link"><span class="caret"></span>{% blocktrans %}свернуть{% endblocktrans %}</p>');
+    });
+    $(document).on('click', '.toggle-desc', function () {
+      var desc = $(this).prev('p');
+      if (desc.is(':visible')) {
+        desc.hide().parent().removeClass('dropup');
+        $(this).html('<span class="caret"></span>{% blocktrans %}Подробнее о сертификате{% endblocktrans %}');
+      }
+      else {
+        desc.show().parent().addClass('dropup');
+        $(this).html('<span class="caret"></span>{% blocktrans %}свернуть{% endblocktrans %}');
+      }
+    });
+
+    var timeline = SEARCH_PARAMETERS.get()['timeline'];
+    if (timeline) {
+        var href = {
+            'subscriptions': '#subscriptions',
+            'finished': '#completed-cources',
+            'current': '#current-cources',
+            'future': '#featured-cources'
+        }[timeline[0]];
+        if (href)
+            $('a[href="' + href + '"]').tab('show');
+    }
+    else
+        SEARCH_PARAMETERS.add('timeline', {
+            '#subscriptions': 'subscriptions',
+            '#completed-cources': 'finished',
+            '#current-cources': 'current',
+            '#featured-cources': 'future'
+        }[$('li.active[role="presentation"]').children('a').attr('href')]);
+
+    $('a[role="tab"]').click(function(e) {
+        switch ($(this).attr('href')) {
+            case '#featured-cources':
+                SEARCH_PARAMETERS.add('timeline', 'future');
+                break;
+            case '#current-cources':
+                SEARCH_PARAMETERS.add('timeline', 'current');
+                break;
+            case '#completed-cources':
+                SEARCH_PARAMETERS.add('timeline', 'finished');
+                break;
+            case '#subscriptions':
+                SEARCH_PARAMETERS.add('timeline', 'subscriptions');
+                break;
+        }
+    });
+
+    $(document).ready(function() {
+      $('a.do-leave').click(function (e) {
+        e.preventDefault();
+
+        $('#leave-confirm-status').html('');
+        $('#leave-confirm').data('ptcpt-id', $(this).data('ptcpt-id'));
+        $('#leave-confirm-title').html("&laquo;" + $(this).data('title') + "&raquo;");
+        var deadline = $(this).parents('div.course').data('deadline');
+        if (deadline) {
+            var fmts = gettext('Запись на курс закроется через %s.');
+            var deadline_msg = interpolate(fmts, [deadline]);
+        }
+        else {
+            var deadline_msg = gettext('Запись на курс уже закрыта, вы не сможете записаться обратно.');
+        }
+        $('#course-deadline-info').html(deadline_msg);
+      });
+
+      $('#leave-confirm-close').click(function() {
+        $('#leave-confirm-box').modal('hide');
+      });
+
+      $('#leave-confirm').click(function () {
+        var leave_confirm = this;
+        $(leave_confirm).attr('disabled', 'disabled');
+        $(leave_confirm).text($(leave_confirm).data('loading-text'));
+        var returned_status = 0;
+
+        var post_data = {'ptcpt-id': $(this).data('ptcpt-id')};
+        var info_msg = $('#leave-confirm-status').find('p.bg-info');
+        if (info_msg.length && info_msg.data('reason') == 'deadline')
+            post_data['confirmation'] = true;
+        $.post(PARTICIPANT_QUIT_URL, post_data)
+          .success(function (data) {
+            var result = $.parseJSON(data);
+            returned_status = result.status;
+            if (result.status == 1) {
+              $('a[data-ptcpt-id="' + result.id + '"]').closest('.my-cources-list').remove();
+              $('#leave-confirm-box').modal('hide');
+              location.reload()
+            }
+            else if (result.status == 2) {
+              $('#leave-confirm-status').html('<p class="bg-info">' + result.description + '</p>');
+            }
+            else if (result.status == 3) {
+              $('#leave-confirm-status').html('<p class="bg-info" data-reason="deadline">' + result.description + '</p>');
+            }
+          })
+          .fail(function () {
+            $('#leave-confirm-status').html('<p class="bg-warning">{% blocktrans %}Не удалось выполнить запрос{% endblocktrans %}</p>');
+          })
+          .always(function () {
+            $(leave_confirm).removeAttr('disabled');
+            if (returned_status == 3) {
+              $('#leave-confirm-close').text('{% blocktrans %}Я передумал. Остаюсь на курсе.{% endblocktrans %}');
+              $(leave_confirm).text('{% blocktrans %}Да. Покинуть курс.{% endblocktrans %}');
+            }
+          });
+      });
+
+      $('a.do-unsubscribe').click(function (e) {
+        e.preventDefault();
+
+        $('#unsubscribe-confirm-status').html('');
+        var title = $(this).parents('div.course').data('title');
+        $('#unsubscribe-confirm').data('course-id', $(this).parents('div.course').data('course-id'));
+        $('#unsubscribe-confirm-title').html("&laquo;" + title + "&raquo;");
+      });
+
+      $('#unsubscribe-confirm-close').click(function() {
+        $('#unsubscribe-confirm-box').modal('hide');
+      });
+
+      $('#unsubscribe-confirm').click(function () {
+        var leave_confirm = this;
+        $(leave_confirm).attr('disabled', 'disabled');
+        $(leave_confirm).text($(leave_confirm).data('loading-text'));
+
+        var course_id = $(this).data('course-id');
+        var post_data = {'course-id': course_id, 'subscribe': 'no'};
+        $.post(URL_SUBSCRIBE, post_data)
+          .success(function (data) {
+            if (data.status == 1) {
+              $('div[data-course-id="' + course_id + '"]').closest('.my-cources-list').remove();
+              $('#unsubscribe-confirm-box').modal('hide');
+              location.reload()
+            }
+            else {
+              $('#unsubscribe-confirm-status').html('<p class="bg-warning">{% blocktrans %}Не удалось выполнить запрос{% endblocktrans %}</p>');
+            }
+          })
+          .fail(function () {
+            $('#unsubscribe-confirm-status').html('<p class="bg-warning">{% blocktrans %}Не удалось выполнить запрос{% endblocktrans %}</p>');
+          })
+          .always(function () {
+            $(leave_confirm).removeAttr('disabled').html('{% blocktrans %}Отписаться{% endblocktrans %}');
+          });
+      });
+
+      $('input.edx-subscribe').click(function(e) {
+          e.preventDefault();
+          $('.checked-for-subscribe').removeClass('checked-for-subscribe');
+          $(this).addClass('checked-for-subscribe');
+          if (!$(this).prop('checked')) {
+              $('#subscribe-popup-text').html('{% blocktrans %}Отписавшись от рассылки, вы не сможете получать важные объявления и оповещения о наступающих событиях от команды курса.{% endblocktrans %}');
+              $('#do-edx-subscribe').html('{% blocktrans %}Отписаться от рассылки{% endblocktrans %}');
+          }
+          else {
+              $('#subscribe-popup-text').html('{% blocktrans %}Вы снова будете получать рассылку от команды курса.{% endblocktrans %}');
+              $('#do-edx-subscribe').html('{% blocktrans %}Подписаться на рассылку{% endblocktrans %}');
+          }
+      });
+
+      $('#do-edx-subscribe').click(function() {
+          var btn = $(this);
+          $(btn).attr('disabled', 'disabled');
+          $(btn).text('{% blocktrans %}Отправка запроса...{% endblocktrans %}');
+          var el = $($('.checked-for-subscribe')[0]);
+          var data = {course_id: el.data('course-id'), subscribe: !el.prop('checked')};
+          $.post("{% url 'course_edx_subscribe' %}", data)
+            .success(function(data) {
+              if (data['status'] == 1) {
+                var el = $('.checked-for-subscribe');
+                el.prop('checked', !el.prop('checked'));
+                el.removeClass('checked-for-subscribe');
+                $('#subscription-box').modal('hide');
+              }
+              else
+                show_subscribe_fail_msg();
+            })
+            .fail(function() {
+              show_subscribe_fail_msg();
+            });
+      });
+
+      function show_subscribe_fail_msg() {
+        var url = window.location.origin + "{% url 'feedback' %}";
+        var link = '<a href="' + url + '">' + url + '</a>';
+        var fmts = gettext('Не удалось изменить параметры подписки, пожалуйста, повторите попытку позже. В случае повторной ошибки, обратитесь, пожалуйста, в службу поддержки %s');
+        var str = interpolate(fmts, [link]);
+        $('#subscribe-popup-text').html(str);
+      }
+    });
+  </script>
+
+{% endblock javascript %}

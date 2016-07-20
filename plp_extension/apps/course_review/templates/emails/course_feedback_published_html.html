@@ -1,0 +1,15 @@
+{% load i18n %}
+<p>
+    {% blocktrans trimmed with first_name=user.first_name last_name=user.last_name %}
+    Здравствуйте, {{ first_name }} {{ last_name }},
+    {% endblocktrans %}
+</p>
+<p>
+    {% blocktrans trimmed with title=session.course.title %}
+    на курс &laquo;{{ title }}&raquo;, в котором вы являетесь автором, опубликован отзыв:
+    {% endblocktrans %}
+</p>
+<p>
+{#    {{ feedback.feedback|linebreaks }}#}
+    {# TODO: отображение feedback #}
+</p>

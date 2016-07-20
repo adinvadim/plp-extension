@@ -1,0 +1,26 @@
+{% load i18n %}
+<div class="row user-ratings" data-rating-id="{{ item.id }}">
+    <div class="col-md-10">
+        <p>
+            {% blocktrans trimmed with tag_start='<span class="rating">' tag_end='</span>' rating=item.rating %}
+            Оценка: {{ tag_start }}{{ rating }}{{ tag_end }}
+            {% endblocktrans %}
+        </p>
+        {% if item.comment %}
+            <p class="user-comment">{{ item.comment|linebreaksbr }}</p>
+        {% endif %}
+        <p>
+            {% blocktrans trimmed with tag_start='<span class="date">' tag_end='</span>' date=item.updated_at|date:'SHORT_DATE_FORMAT' %}
+            Дата: {{ tag_start }}{{ date }}{{ tag_end }}
+            {% endblocktrans %}
+        </p>
+    </div>
+    {% if is_author %}
+        <div class="col-md-2">
+            <button class="btnClaim btn btn-danger"><span class="glyphicon glyphicon-exclamation-sign"></span></button>
+            <button class="btn-question btn btn-info" {% if item.anon %}disabled=""{% endif %}>
+                <span class="glyphicon glyphicon-question-sign"></span>
+            </button>
+        </div>
+{% endif %}
+</div>

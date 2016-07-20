@@ -1,0 +1,25 @@
+{% load i18n %}
+<p>
+    {% blocktrans trimmed with title=session.course.title %}
+    От автора курса &laquo;{{ title }}&raquo; поступил вопрос о вашем отзыве на курс:
+    {% endblocktrans %}
+</p>
+<p>
+    {{ question|linebreaks }}
+</p>
+<p>
+    {% blocktrans with rating=rating.rating %}Ваша оценка курса: {{ rating }}{% endblocktrans %}
+</p>
+{% if rating.comment %}
+<p>
+    {% blocktrans %}Ваш отзыв:{% endblocktrans %}
+    <br>
+    {{ rating.comment|linebreaks }}
+</p>
+{% endif %}
+<p>
+    {% blocktrans trimmed %}
+    Чтобы ответить автору курса, пожалуйста, нажмите на кнопку ответить,
+    мы автоматически подставим адрес электронной почты автора курса.
+    {% endblocktrans %}
+</p>

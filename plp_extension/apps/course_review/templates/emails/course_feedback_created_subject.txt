@@ -1,0 +1,1 @@
+{% load i18n %}{% blocktrans with title=session.course.title %}Добавлен новый отзыв на курс "{{ title }}"{% endblocktrans %}

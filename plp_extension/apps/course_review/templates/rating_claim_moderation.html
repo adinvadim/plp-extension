@@ -1,0 +1,46 @@
+{% extends 'feedback_moderation.html' %}
+{% load i18n %}
+
+{% block title %}{% blocktrans %}Модерация жалоб на отзывы{% endblocktrans %}{% endblock %}
+
+{% block section_id %}rating-claim-moderation{% endblock %}
+
+{% block content_header %}{% blocktrans %}Модерация жалоб на отзывы{% endblocktrans %}{% endblock %}
+
+{% block content_table %}
+<table class="table">
+    <tr>
+        <th>{% blocktrans %}Сессия курса{% endblocktrans %}</th>
+        <th>{% blocktrans %}Отзыв{% endblocktrans %}</th>
+        <th></th>
+        <th></th>
+    </tr>
+    {% for item in object_list %}
+        <tr>
+            <td>
+                {{ item.csrating.session.course.university.title }}<br>
+                {{ item.csrating.session.course.title }}<br>
+                {{ item.csrating.session.slug }}
+            </td>
+            <td>
+                <p>{% blocktrans with rating=item.csrating.rating %}Оценка: {{ rating }}{% endblocktrans %}</p>
+                <p>{{ item.csrating.feedback|linebreaks }}</p>
+                <p>{{ item.reason|linebreaks }}</p>
+            </td>
+            <td>
+                <input type="button" data-feedback="{{ item.id }}" class="btn btn-success f-publish-btn" autocomplete="off" value="{% blocktrans %}Принять{% endblocktrans %}" />
+            </td>
+            <td>
+                <input type="button" data-feedback="{{ item.id }}" class="btn btn-danger f-reject-btn" autocomplete="off" value="{% blocktrans %}Отклонить{% endblocktrans %}" />
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        var REQUEST_URL = "{% url 'rating-claim-moderation' %}";
+    </script>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'course/course-base.html' %}
+
+{% load i18n %}
+{% load course_review_tags %}
+
+{% block course_content %}
+
+<div class="row">
+  <div class="col-sm-12">
+    {% if ENABLE_COURSE_RATING %}
+      <div class="rating-info rating-info--view_statistics bg-info row">
+        <div class="col-sm-6">
+          <div class="rating-info__row">
+            <div class="rating-stars rating-stars--readonly rating-info__rating-stars" data-rating="{{ object.course_rating }}"></div>
+            <div class="rating-info__info">
+              {% blocktrans trimmed count counter=object.review_count %}
+              {{ counter }} оценка
+              {% plural %}
+              {{ counter }} оценок
+              {% endblocktrans %}
+            </div>
+          </div>
+          <div class="rating-info__row">
+            <div class="rating-info__stars">
+              {% blocktrans with rating=object.course_rating %}{{ rating }} из 5{% endblocktrans %}
+            </div>
+          </div>
+          <div class="rating-info__row">
+            <a class="btn btn-primary rating-info__action" href="{% url 'leave-course-response' uni_slug=object.university.slug  course_slug=object.slug session_slug=object.next_session.slug %}">
+              {% if is_graduate %}
+                {% blocktrans %}Добавить историю обучения{% endblocktrans %}
+              {% else %}
+                {% blocktrans %}Добавить свой отзыв{% endblocktrans %}
+              {% endif %}
+            </a>
+          </div>
+        </div>
+        <div class="col-sm-6">
+
+          {% for grade, percent, votes in object.rating_percentage %}
+          <div class="rating-info__progress-line row" title="{% blocktrans count counter=votes %}{{ counter }} выпускник{% plural %}{{ counter }} выпускников{% endblocktrans %}">
+            <div class="col-sm-1 rating-info__progress-grade">{{ grade }}</div>
+            <div class="col-sm-9">
+              <div class="progress rating-info__progress"><div class="rating-info__progress-bar progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: {{ percent }}%;"></div></div>
+            </div>
+            <div class="col-sm-1 rating-info__progress-percent">{{ percent }}%</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+<div class="row course-reviews" data-limit="10">
+
+  <div class="col-sm-12">
+    <form class="course-reviews__form clearfix" role="form" method="POST" action="{% url 'course-rating-and-feedback-list' course_id=object.id %}">
+      {% csrf_token %}
+      <div class="course-reviews__filters clearfix">
+        <div class="col-md-4 cols-sm-6 col-xs-12 form-group course-reviews__filter-item">
+          <select name="order_by"  id="" class="form-control js-chosen js-chosen_disable-search">
+            <option value="date_desc">{% blocktrans %}По дате: сначала новые{% endblocktrans %}</option>
+            <option value="date_asc">{% blocktrans %}По дате: сначала старые{% endblocktrans %}</option>
+            <option value="rating_desc">{% blocktrans %}По оценке: сначала позитивные{% endblocktrans %}</option>
+            <option value="rating_asc">{% blocktrans %}По оценке: сначала о трудностях{% endblocktrans %}</option>
+            <option value="session_asc">{% blocktrans %}По сессии: сначала первая{% endblocktrans %}</option>
+            <option value="session_desc">{% blocktrans %}По сессии: сначала последняя{% endblocktrans %}</option>
+          </select>
+        </div>
+        <div class="col-md-4 cols-sm-6 col-xs-12 form-group course-reviews__filter-item">
+          <select name="rating" data-placeholder="{% blocktrans %}Выберите оценку{% endblocktrans %}" class="form-control js-chosen js-chosen_disable-search js-chosen_single-deselect">
+            <option value=""></option>
+            <option value="1">{% blocktrans %}Оценка: 1 из 5{% endblocktrans %}</option>
+            <option value="2">{% blocktrans %}Оценка: 2 из 5{% endblocktrans %}</option>
+            <option value="3">{% blocktrans %}Оценка: 3 из 5{% endblocktrans %}</option>
+            <option value="4">{% blocktrans %}Оценка: 4 из 5{% endblocktrans %}</option>
+            <option value="5">{% blocktrans %}Оценка: 5 из 5{% endblocktrans %}</option>
+          </select>
+        </div>
+        <div class="col-md-4 cols-sm-6 col-xs-12 form-group course-reviews__filter-item">
+          <select name="student_type" data-placeholder="{% blocktrans %}От кого{% endblocktrans %}" class="form-control js-chosen js-chosen_disable-search js-chosen_single-deselect">
+            <option value=""></option>
+            <option value="student">{% blocktrans %}От студентов{% endblocktrans %}</option>
+            <option value="graduate">{% blocktrans %}От выпускников{% endblocktrans %}</option>
+          </select>
+        </div>
+        <div class="col-md-4 cols-sm-6 col-xs-12 form-group  course-reviews__filter-item">
+          <select name="session" data-placeholder="{% blocktrans %}Сессия{% endblocktrans %}" class="form-control js-chosen js-chosen_disable-search js-chosen_single-deselect">
+            <option value=""></option>
+            {% for s in all_sessions %}
+              <option value="{{ s.id }}">{{ s.course.title }} {{s.slug }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12 course-reviews__filter-item">
+          <span>
+            {% blocktrans trimmed with shown='<span class="course-reviews__num"></span>' all='<span class="course-reviews__max"></span>' %}
+            Показано {{ shown }} из {{ all }}
+            {% endblocktrans %}
+          </span>
+        </div>
+      </form>
+    </div>
+    <div class="course-reviews__items"></div>
+    <div class="course-reviews__footer clearfix">
+      <div class="col-md-4 col-sm-12 col-md-offset-4">
+        <span>
+          {% blocktrans trimmed with shown='<span class="course-reviews__num"></span>' all='<span class="course-reviews__max"></span>' %}
+          Показано {{ shown }} из {{ all }}
+          {% endblocktrans %}
+        </span>
+        <button class="btn btn-primary course-reviews__append-button">
+          {% blocktrans %}Показать еще 10{% endblocktrans %}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="bg-info col-sm-12">
+    <div class="col-sm-12 col-md-6">
+      <div class="row">
+        <p>
+        {% blocktrans trimmed %}
+        Запишитесь на курс Московского физико-технического университета
+        {% endblocktrans %}<br/>
+        {{ object.course_name }}
+        </p>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-3 col-md-offset-2">
+      <button class="btn btn-primary">
+        {% blocktrans trimmed %}
+        Записаться
+        {% endblocktrans %}
+      </button>
+    </div>
+  </div>
+</div>
+
+{% endblock course_content %}

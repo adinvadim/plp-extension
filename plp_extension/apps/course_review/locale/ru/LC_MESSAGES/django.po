@@ -1,0 +1,562 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-07-19 17:12+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Все"
+msgstr ""
+
+msgid "Фильтрация по вузу"
+msgstr ""
+
+msgid "Фильтрация по сессии курса"
+msgstr ""
+
+msgid "Опубликован"
+msgstr ""
+
+msgid "На ревью"
+msgstr ""
+
+msgid "Отклонен"
+msgstr ""
+
+msgid "Ожидание"
+msgstr ""
+
+msgid "Пользователь"
+msgstr ""
+
+msgid "Сессия курса"
+msgstr ""
+
+msgid "Оценка"
+msgstr ""
+
+msgid "Получен сертификат"
+msgstr ""
+
+msgid "Статус"
+msgstr ""
+
+msgid "Анонимно"
+msgstr ""
+
+msgid "Отзыв о курсе"
+msgstr ""
+
+msgid "Отзывы о курсе"
+msgstr ""
+
+msgid "Пользователь не записан на этот курс"
+msgstr ""
+
+msgid "Обучение на курсе еще не завершено"
+msgstr ""
+
+msgid "Пожалуйста, ответьте по меньшей мере на два вопроса."
+msgstr ""
+
+#, python-format
+msgid ""
+"Пользователь %(user)s оставил расширенный отзыв %(f_id)s по курсу %(univ)s "
+"%(course)s %(session)s"
+msgstr ""
+
+msgid "Опубликовано"
+msgstr ""
+
+msgid "Пояснение"
+msgstr ""
+
+msgid "Достоинства"
+msgstr ""
+
+msgid "Недостатки"
+msgstr ""
+
+msgid "Отзыв отклонен"
+msgstr ""
+
+msgid "Пользователь не записан на курс"
+msgstr ""
+
+msgid "Заполните поле \"пояснение\""
+msgstr ""
+
+msgid "Пояснение должно занимать от 100 до 1000 символов"
+msgstr ""
+
+msgid "На рассмотрении"
+msgstr ""
+
+msgid "Принято"
+msgstr ""
+
+msgid "Отклонено"
+msgstr ""
+
+msgid "Пользователь, запросивший удаление"
+msgstr ""
+
+msgid "Отзыв"
+msgstr ""
+
+msgid "Причина удаления"
+msgstr ""
+
+msgid "Жалоба на отзыв о курсе"
+msgstr ""
+
+msgid "Жалобы на отзыв о курсе"
+msgstr ""
+
+msgid "Пользователь, отправивший вопрос"
+msgstr ""
+
+msgid "Текст вопроса"
+msgstr ""
+
+msgid "Вопрос по отзыву"
+msgstr ""
+
+msgid "Вопросы по отзывам"
+msgstr ""
+
+msgid "Отключить временно добавление новых отзывов"
+msgstr ""
+
+msgid "Отключить временно добавление новых историй"
+msgstr ""
+
+msgid "Настройки отзывов"
+msgstr ""
+
+#, python-format
+msgid "Оценка: %(tag_start)s%(rating)s%(tag_end)s"
+msgstr ""
+
+#, python-format
+msgid "Дата: %(tag_start)s%(date)s%(tag_end)s"
+msgstr ""
+
+#, python-format
+msgid "Оценки курса &laquo;%(title)s&raquo; за %(date_val)s"
+msgstr ""
+
+#, python-format
+msgid "Сессия %(title)s"
+msgstr ""
+
+msgid "Оценки курса"
+msgstr ""
+
+#, python-format
+msgid "Оценка: %(tag_start)s%(tag_end)s"
+msgstr ""
+
+#, python-format
+msgid "Дата: %(tag_start)s%(tag_end)s"
+msgstr ""
+
+msgid "Обоснуйте запрос на удаление отзыва"
+msgstr ""
+
+msgid "ОК"
+msgstr ""
+
+msgid "Отмена"
+msgstr ""
+
+msgid "Запросить удаление"
+msgstr ""
+
+msgid "Отправить вопрос автору отзыва"
+msgstr ""
+
+msgid "Отправить вопрос"
+msgstr ""
+
+#, python-format
+msgid "Оценки курса &laquo;%(title)s - %(slug)s&raquo;"
+msgstr ""
+
+msgid "Для данной сессии курса отображение отзывов скрыто."
+msgstr ""
+
+#, python-format
+msgid "%(counter)s оценка"
+msgid_plural "%(counter)s оценок"
+msgstr[0] "%(counter)s оценка"
+msgstr[1] "%(counter)s оценки"
+msgstr[2] "%(counter)s оценок"
+
+#, python-format
+msgid "%(rating)s из 5"
+msgstr ""
+
+msgid "Добавить историю обучения"
+msgstr ""
+
+msgid "Добавить свой отзыв"
+msgstr ""
+
+#, python-format
+msgid "%(counter)s выпускник"
+msgid_plural "%(counter)s выпускников"
+msgstr[0] "%(counter)s выпускник"
+msgstr[1] "%(counter)s выпускника"
+msgstr[2] "%(counter)s выпускников"
+
+msgid "По дате: сначала новые"
+msgstr ""
+
+msgid "По дате: сначала старые"
+msgstr ""
+
+msgid "По оценке: сначала позитивные"
+msgstr ""
+
+msgid "По оценке: сначала о трудностях"
+msgstr ""
+
+msgid "По сессии: сначала первая"
+msgstr ""
+
+msgid "По сессии: сначала последняя"
+msgstr ""
+
+msgid "Выберите оценку"
+msgstr ""
+
+msgid "Оценка: 1 из 5"
+msgstr ""
+
+msgid "Оценка: 2 из 5"
+msgstr ""
+
+msgid "Оценка: 3 из 5"
+msgstr ""
+
+msgid "Оценка: 4 из 5"
+msgstr ""
+
+msgid "Оценка: 5 из 5"
+msgstr ""
+
+msgid "От кого"
+msgstr ""
+
+msgid "От студентов"
+msgstr ""
+
+msgid "От выпускников"
+msgstr ""
+
+msgid "Сессия"
+msgstr ""
+
+#, python-format
+msgid "Показано %(shown)s из %(all)s"
+msgstr ""
+
+msgid "Показать еще 10"
+msgstr ""
+
+msgid "Запишитесь на курс Московского физико-технического университета"
+msgstr ""
+
+msgid "Записаться"
+msgstr ""
+
+#, python-format
+msgid "Здравствуйте, %(first_name)s %(last_name)s,"
+msgstr ""
+
+#, python-format
+msgid ""
+"на курс &laquo;%(title)s&raquo;, в котором вы являетесь автором, ожидает "
+"публикации отзыв:"
+msgstr ""
+
+#, python-format
+msgid "Опубликовать отзыв вы можете, пройдя по ссылке %(site)s%(link)s"
+msgstr ""
+
+#, python-format
+msgid "Добавлен новый отзыв на курс \"%(title)s\""
+msgstr ""
+
+#, python-format
+msgid ""
+"на курс &laquo;%(title)s&raquo;, в котором вы являетесь автором, опубликован "
+"отзыв:"
+msgstr ""
+
+#, python-format
+msgid "Опубликован новый отзыв на курс \"%(title)s\""
+msgstr ""
+
+msgid "Вы оставляли заявку на удаление отзыва:"
+msgstr ""
+
+#, python-format
+msgid "Оценка: %(rating)s"
+msgstr ""
+
+#, python-format
+msgid "по курсу &laquo;%(title)s&raquo;."
+msgstr ""
+
+msgid "Ваша заявка одобрена."
+msgstr ""
+
+msgid "Ваша заявка отклонена."
+msgstr ""
+
+msgid "Если у вас есть вопросы, просто ответьте на это письмо."
+msgstr ""
+
+#, python-format
+msgid "Обновлен статус по запросу на удаление отзыва по курсу \"%(title)s\""
+msgstr ""
+
+#, python-format
+msgid ""
+"От автора курса &laquo;%(title)s&raquo; поступил вопрос о вашем отзыве на "
+"курс:"
+msgstr ""
+
+#, python-format
+msgid "Ваша оценка курса: %(rating)s"
+msgstr ""
+
+msgid "Ваш отзыв:"
+msgstr ""
+
+msgid ""
+"Чтобы ответить автору курса, пожалуйста, нажмите на кнопку ответить, мы "
+"автоматически подставим адрес электронной почты автора курса."
+msgstr ""
+
+#, python-format
+msgid "Вопрос по Вашему отзыву на курс \"%(title)s\""
+msgstr ""
+
+msgid "Модерация отзывов"
+msgstr ""
+
+msgid "Фильтрация по курсу"
+msgstr ""
+
+msgid "Опубликовать"
+msgstr ""
+
+msgid "Отклонить"
+msgstr ""
+
+#, python-format
+msgid "%(current_page)s из %(all_pages)s стр."
+msgstr ""
+
+msgid "Непромодерированных отзывов по заданным параметрам не найдено"
+msgstr ""
+
+msgid "Оставить историю обучения"
+msgstr ""
+
+msgid "Оставить отзыв"
+msgstr ""
+
+msgid ""
+"Насколько вероятно, что вы порекомендуете этот курс друзьям и "
+"однокурсникам?\n"
+"            (0 - не порекомендую, 10 - обязательно посоветую им пройти курс) "
+msgstr ""
+
+msgid "Расскажите, почему вы выбрали этот курс?"
+msgstr ""
+
+msgid "Был ли курс полезен, открыл ли он вам что-то новое?"
+msgstr ""
+
+msgid "Какую видите возможность применения полученных знаний?"
+msgstr ""
+
+msgid "Расскажите что-нибудь, что поможет будущим студентам"
+msgstr ""
+
+msgid "Ваши замечания и пожелания для команды преподавателей"
+msgstr ""
+
+msgid "Может, есть что-то еще, что вы хотите отметить?"
+msgstr ""
+
+msgid "Отправить отзыв"
+msgstr ""
+
+msgid "Поставьте оценку"
+msgstr ""
+
+msgid "Преимущества"
+msgstr ""
+
+msgid "Перечислите, что вам понравилось?"
+msgstr ""
+
+msgid "Что нужно исправить?"
+msgstr ""
+
+msgid "Комментарии"
+msgstr ""
+
+msgid "Ваши впечатления о курсе?"
+msgstr ""
+
+msgid "Это поле является обязательным"
+msgstr ""
+
+msgid "Пожалуйста, введите значение длинной от 100 до 1000 символов"
+msgstr ""
+
+msgid "Модерация жалоб на отзывы"
+msgstr ""
+
+msgid "Принять"
+msgstr ""
+
+#, python-format
+msgid "Оценки курсов преподавателя %(user)s за %(date_val)s"
+msgstr ""
+
+msgid ""
+"Спасибо за вашу историю! Она будет опубликована после проверки модератором."
+msgstr ""
+
+msgid "Спасибо за ваш отзыв!"
+msgstr ""
+
+#, python-format
+msgid ""
+"Вы будете автоматически перенаправлены в Личный Кабинет через "
+"%(tag_start)s10%(tag_end)s секунд."
+msgstr ""
+
+#, python-format
+msgid "%(num)s год назад"
+msgid_plural "%(num)s лет назад"
+msgstr[0] "%(num)s год назад"
+msgstr[1] "%(num)s года назад"
+msgstr[2] "%(num)s лет назад"
+
+#, python-format
+msgid "%(num)s месяц назад"
+msgid_plural "%(num)s месяцев назад"
+msgstr[0] "%(num)s месяц назад"
+msgstr[1] "%(num)s месяца назад"
+msgstr[2] "%(num)s месяцев назад"
+
+#, python-format
+msgid "%(num)s неделя назад"
+msgid_plural "%(num)s недель назад"
+msgstr[0] "%(num)s неделя назад"
+msgstr[1] "%(num)s недели назад"
+msgstr[2] "%(num)s недель назад"
+
+#, python-format
+msgid "%(num)s день назад"
+msgid_plural "%(num)s дней назад"
+msgstr[0] "%(num)s день назад"
+msgstr[1] "%(num)s дня назад"
+msgstr[2] "%(num)s дней назад"
+
+msgid "вчера"
+msgstr ""
+
+msgid "сегодня"
+msgstr ""
+
+#, python-format
+msgid ""
+"Преподаватель %(instructor)s опубликовал отзыв пользователя %(user)s "
+"%(f_id)s по курсу %(univ)s %(course)s %(session)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"Преподаватель %(instructor)s отклонил отзыв пользователя %(user)s %(f_id)s "
+"по курсу %(univ)s %(course)s %(session)s"
+msgstr ""
+
+msgid "Сессия не найдена"
+msgstr ""
+
+msgid "Переданы некорректные данные"
+msgstr ""
+
+msgid "Ваш отзыв был удален по требованию автора курса"
+msgstr ""
+
+#, python-format
+msgid ""
+"Пользователь %(user)s изменил оценку %(old_value)s с отзывом %(old_text)s на "
+"%(value)s с отзывом %(text)s курсу %(univ)s %(course)s %(session)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"Пользователь %(user)s поставил оценку %(value)s с отзывом %(text)s курсу "
+"%(univ)s %(course)s %(session)s"
+msgstr ""
+
+msgid "Вы не можете изменить оставленную историю прохождения"
+msgstr ""
+
+#, python-format
+msgid ""
+"Вы уже отправляли запрос на удаление отзыва %(dt)s с комментарием "
+"\"%(comment)s\". Пожалуйста, дождитесь его рассмотрение администратором "
+"платформы."
+msgstr ""
+
+#, python-format
+msgid ""
+"Вы уже отправляли запрос на удаление отзыва %(dt)s с комментарием "
+"\"%(comment)s\". Администратор считает указанные вами причины для удаления "
+"отзыва недостаточными. По дополнительным вопросам вы можете связаться <a "
+"href=\"%(href)s\">с нами</a>."
+msgstr ""
+
+msgid "Оценка была удалена"
+msgstr ""
+
+#, python-format
+msgid "Вы уже отправляли вопрос \"%(question)s\" по данному отзыву"
+msgstr ""
+
+#, python-format
+msgid ""
+"Teacher %(user_id)s sent question %(text)s about %(course_student_rating_id)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"staff user %(user)s set resolution %(resolution)s for rating claim "
+"%(rating_claim_id)s"
+msgstr ""

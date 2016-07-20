@@ -1,0 +1,4 @@
+{% load i18n admin_urls %}
+<div id="bottombar">
+{% if show_save_and_continue %}<button title="{% trans 'Save and continue editing' %}" type="submit" name="_continue"><i class="fa fa-lg fa-floppy-o"></i><i class="fa fa-caret-right"></i><i class="fa fa-lg fa-pencil-square-o"></i> <span class="text">{% trans 'Save and continue editing' %}</span></button>{% endif %}
+</div>
