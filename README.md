@@ -1,5 +1,6 @@
 ## Установка
 
+    Установить в plp:
     pip install -e git+https://github.com/nosanity/plp-extension.git@master#egg=plp_extension
 
 ## Настройки
