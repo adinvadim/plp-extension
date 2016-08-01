@@ -103,7 +103,8 @@
       <div class="clearfix">
         <div class="col-xs-12">
           <p>
-          Отправляя отзыв, вы соглашаетесь с <a href="{% url 'flat_terms' %}">условиями использования</a> сервиса
+          {% url 'flat_terms' as the_url %}
+          {% blocktrans %}Отправляя отзыв, вы соглашаетесь с <a href="{{ the_url }}">условиями использования</a> сервиса {% endblocktrans %}
           </p>
         </div>
       </div>
@@ -153,7 +154,8 @@
     <div class="clearfix">
       <div class="col-xs-12 col-sm-9 col-sm-offset-3">
         <p>
-        Отправляя отзыв, вы соглашаетесь с <a href="{% url 'flat_terms' %}">условиями использования</a> сервиса
+          {% url 'flat_terms' as the_url %}
+          {% blocktrans %}Отправляя отзыв, вы соглашаетесь с <a href="{{ the_url }}">условиями использования</a> сервиса {% endblocktrans %}
         </p>
       </div>
     </div>
